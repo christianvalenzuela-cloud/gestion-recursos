@@ -1,19 +1,64 @@
-from database import get_connection
+import sqlite3
+from database import conectar
 
-def agregar_personal(codigo, nombre, rol, disponible):
-    conn = get_connection()
+# -------- PERSONAL --------
+def agregar_personal(codigo, nombre, rol):
+    conn = conectar()
     c = conn.cursor()
     c.execute(
-        "INSERT INTO personal (codigo, nombre, rol, disponible) VALUES (?,?,?,?)",
-        (codigo, nombre, rol, int(disponible))
+        "INSERT INTO personal (codigo, nombre, rol) VALUES (?, ?, ?)",
+        (codigo, nombre, rol)
     )
     conn.commit()
     conn.close()
 
-def listar_personal():
-    conn = get_connection()
+def obtener_personal():
+    conn = conectar()
     c = conn.cursor()
-    c.execute("SELECT id, codigo, nombre, rol, disponible FROM personal")
-    rows = c.fetchall()
+
+    c.execute("""
+    SELECT p.id, p.nombre,
+    CASE
+        WHEN EXISTS (
+            SELECT 1 FROM asignaciones a
+            WHERE a.personal_id = p.id
+        )
+        THEN 'Ocupado'
+        ELSE 'Disponible'
+    END estado
+    FROM personal p
+    """)
+
+    data = c.fetchall()
     conn.close()
-    return rows
+    return data
+
+# -------- PROYECTOS --------
+def agregar_proyecto(codigo, nombre, estado, inicio, fin):
+    conn = conectar()
+    c = conn.cursor()
+    c.execute(
+        "INSERT INTO proyectos (codigo, nombre, estado, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?, ?)",
+        (codigo, nombre, estado, inicio, fin)
+    )
+    conn.commit()
+    conn.close()
+
+def obtener_proyectos():
+    conn = conectar()
+    c = conn.cursor()
+    c.execute("SELECT id, nombre FROM proyectos")
+    data = c.fetchall()
+    conn.close()
+    return data
+
+# -------- ASIGNACIONES --------
+def asignar_personal(personal_id, proyecto_id):
+    conn = conectar()
+    c = conn.cursor()
+    c.execute(
+        "INSERT INTO asignaciones (personal_id, proyecto_id) VALUES (?, ?)",
+        (personal_id, proyecto_id)
+    )
+    conn.commit()
+    conn.close()

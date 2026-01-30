@@ -1,32 +1,43 @@
 import sqlite3
+import os
 
-def get_connection():
-    return sqlite3.connect("gestion_recursos.db", check_same_thread=False)
+DB_PATH = "data/recursos.db"
 
-def init_db():
-    conn = get_connection()
+def conectar():
+    os.makedirs("data", exist_ok=True)
+    return sqlite3.connect(DB_PATH)
+
+def crear_tablas():
+    conn = conectar()
     c = conn.cursor()
 
     c.execute("""
     CREATE TABLE IF NOT EXISTS personal (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        codigo TEXT UNIQUE,
+        nombre TEXT,
+        rol TEXT
+    )
+    """)
+
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS proyectos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         codigo TEXT,
         nombre TEXT,
-        rol TEXT,
-        disponible INTEGER
+        estado TEXT,
+        fecha_inicio TEXT,
+        fecha_fin TEXT
     )
     """)
 
     c.execute("""
     CREATE TABLE IF NOT EXISTS asignaciones (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        codigo_proyecto TEXT,
         personal_id INTEGER,
-        fecha_inicio TEXT,
-        fecha_fin TEXT
+        proyecto_id INTEGER
     )
     """)
 
     conn.commit()
     conn.close()
-
