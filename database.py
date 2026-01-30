@@ -1,11 +1,9 @@
 import sqlite3
-import os
 
-DB_PATH = "data/recursos.db"
+DB_NAME = "recursos.db"
 
 def conectar():
-    os.makedirs("data", exist_ok=True)
-    return sqlite3.connect(DB_PATH)
+    return sqlite3.connect(DB_NAME, check_same_thread=False)
 
 def crear_tablas():
     conn = conectar()
@@ -14,9 +12,10 @@ def crear_tablas():
     c.execute("""
     CREATE TABLE IF NOT EXISTS personal (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        codigo TEXT UNIQUE,
         nombre TEXT,
-        rol TEXT
+        cargo TEXT,
+        area TEXT,
+        disponible INTEGER DEFAULT 1
     )
     """)
 
@@ -41,3 +40,4 @@ def crear_tablas():
 
     conn.commit()
     conn.close()
+
