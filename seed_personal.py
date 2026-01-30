@@ -1,11 +1,7 @@
 from database import conectar, crear_tablas
 
-crear_tablas()
-conn = conectar()
-c = conn.cursor()
-
 personal = [
-    ("Cinthya Bellido", "Administradora", "Administración"),
+    ("Cinthya Bellido", "Administradora", "Oficina"),
     ("Antonio Velasco", "Jefe de Servicios", "Servicios"),
     ("Christian Valenzuela", "Coord. Servicios", "Servicios"),
     ("Marco Subelete", "Coord. Servicios", "Servicios"),
@@ -15,41 +11,39 @@ personal = [
     ("Luis Flores", "Sup. Seguridad", "Seguridad"),
     ("Victor Salazar", "Sup. Seguridad", "Seguridad"),
     ("Lilian Huaman", "Sup. Seguridad", "Seguridad"),
-    ("Juan Sunción", "Sup. Técnico", "Técnico"),
-    ("Henry Sandoval", "Sup. Técnico", "Técnico"),
-    ("Miguel Conyas", "Técnico", "Técnico"),
-    ("Edinson Morales", "Técnico", "Técnico"),
-    ("Luis Martinez", "Técnico", "Técnico"),
-    ("Darwin Araujo", "Técnico / Rigger", "Técnico"),
-    ("Christian Rivas", "Técnico", "Técnico"),
-    ("Alex Palomino", "Técnico", "Técnico"),
-    ("Percy Ugarte", "Técnico", "Técnico"),
-    ("Saul Sotelo", "Técnico", "Técnico"),
-    ("Taipe Opver", "Técnico", "Técnico"),
-    ("Tito Melendez", "Técnico", "Técnico"),
-    ("Danny Condor", "Técnico", "Técnico"),
-    ("Karlo", "Técnico", "Técnico"),
-    ("Deivis Rivera Guerrero", "Técnico", "Técnico"),
+    ("Tec. Juan Sunción", "Sup. Técnico", "Técnico"),
+    ("Tec. Henry Sandoval", "Sup. Técnico", "Técnico"),
+    ("Tec. Miguel Conyas", "Técnico", "Técnico"),
+    ("Tec. Edinson Morales", "Técnico", "Técnico"),
+    ("Tec. Luis Martinez", "Técnico", "Técnico"),
+    ("Tec. Darwin Araujo", "Técnico / Rigger", "Técnico"),
+    ("Tec. Christian Rivas", "Técnico", "Técnico"),
+    ("Tec. Alex Palomino", "Técnico", "Técnico"),
+    ("Tec. Percy Ugarte", "Técnico", "Técnico"),
+    ("Tec. Saul Sotelo", "Técnico", "Técnico"),
+    ("Tec. Taipe Opver", "Técnico", "Técnico"),
+    ("Tec. Tito Melendez", "Técnico", "Técnico"),
+    ("Tec. Danny Condor", "Técnico", "Técnico"),
+    ("Tec. Karlo", "Técnico", "Técnico"),
+    ("Tec. Deivis Rivera Guerrero", "Técnico", "Técnico"),
     ("Everly Tapia", "Conductor", "Movilidad"),
-    ("Jorge Palomino", "Tercero", "Externo"),
-    ("Llontop", "Personal Obras", "Obras"),
-    ("Luis Morales M.", "Capataz Linero", "Obras"),
-    ("Marcos Gaytán", "Capataz Electromecánico", "Obras"),
-    ("Marco Guevara", "Técnico Electricista", "Obras"),
-    ("Tadeo Vera", "Técnico Electricista", "Obras"),
-    ("Fernando Moya", "Ing. Supervisor", "Ingeniería"),
-    ("Victor Cardenas", "Ing. Supervisor", "Ingeniería"),
+    ("Segundo Gícaro", "Camión Grúa", "Obras"),
     ("Wiler Coppa", "Coord. Servicios", "Arequipa"),
-    ("Christian Rodriguez", "Ing. Sup. Servicio", "Arequipa"),
     ("Kelly Luna", "Sup. Seguridad", "Arequipa")
 ]
 
-c.executemany(
-    "INSERT INTO personal (nombre, cargo, area) VALUES (?, ?, ?)",
-    personal
-)
+crear_tablas()
+conn = conectar()
+c = conn.cursor()
+
+for nombre, cargo, area in personal:
+    c.execute(
+        "INSERT INTO personal (nombre, cargo, area, disponible) VALUES (?, ?, ?, 1)",
+        (nombre, cargo, area)
+    )
 
 conn.commit()
 conn.close()
 
-print("✅ Personal cargado correctamente")
+print("✔ Personal cargado correctamente")
+
